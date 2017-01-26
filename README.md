@@ -1,0 +1,2 @@
+# SLSlideDemo
+android listview与scrollview滑动事件的兼容，listview无须一次性全部加载所有项，item可复用
