@@ -3,7 +3,6 @@ package com.lixin.slslidedemo.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
@@ -17,7 +16,6 @@ import java.lang.reflect.Method;
 
 public class MyListview extends ListView {
 
-    public boolean isIntercept = false;
 
     public MyListview(Context context) {
         this(context, null);
@@ -40,9 +38,10 @@ public class MyListview extends ListView {
      * @return
      */
     public boolean isBottom() {
-
-        int lastVisibleItem = getLastVisiblePosition();
-        if (lastVisibleItem == 5) {
+        int firstVisibleItem = getFirstVisiblePosition();//屏幕上显示的第一条是list中的第几条
+        int childcount = getChildCount();//屏幕上显示多少条item
+        int totalItemCount = getCount();//一共有多少条
+        if ((firstVisibleItem + childcount) >=totalItemCount) {
             return true;
         }
         return false;
@@ -55,7 +54,7 @@ public class MyListview extends ListView {
      */
     public boolean isTop() {
         int firstVisibleItem = getFirstVisiblePosition();
-        if (firstVisibleItem == 5) {
+        if (getChildAt(firstVisibleItem) != null && getChildAt(firstVisibleItem).getTop() == 0) {
             return true;
         }
         return false;
@@ -77,24 +76,20 @@ public class MyListview extends ListView {
                 if (isTop()) {
                     if (y - down > 1) {
 //                        到顶端,向下滑动  把事件拦截 由自己处理
-                        isIntercept = true;
-                        getParent().requestDisallowInterceptTouchEvent(true);
+                        getParent().requestDisallowInterceptTouchEvent(false);
                     } else {
                         //   到顶端,向上滑动 把事件教给父类
-                        isIntercept = false;
-                        getParent().requestDisallowInterceptTouchEvent(false);
+                        getParent().requestDisallowInterceptTouchEvent(true);
                     }
                 }
 
                 if (isBottom()) {
                     if (y - down > 1) {
 //                        到底端,向下滑动  把事件教给父类
-                        isIntercept = false;
-                        getParent().requestDisallowInterceptTouchEvent(false);
+                        getParent().requestDisallowInterceptTouchEvent(true);
                     } else {
 //                        到底端,向上滑动 把事件拦截 由自己处理
-                        isIntercept = true;
-                        getParent().requestDisallowInterceptTouchEvent(true);
+                        getParent().requestDisallowInterceptTouchEvent(false);
                     }
                 }
                 break;
